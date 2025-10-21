@@ -1,12 +1,13 @@
 config:
   target: "http://localhost:8888"
   phases:
-    - duration: 0
+    - duration: 60
       arrivalRate: 1
   processor: "./helpers.js"
 
 scenarios:
-  - name: "Test"
+  - name: "Full catalog, checkout & payment"
+    weight: 2
     beforeScenario: getAllProducts
     flow:
       - get:
@@ -47,3 +48,23 @@ scenarios:
             cardNumber: "1234567890123456"
             expiryDate: 01/35
             cvc: 123
+
+  - name: "Only catalog & cart"
+    weight: 6
+    beforeScenario: getAllProducts
+    flow:
+      - get:
+          url: "/home"
+      - get:
+          url: "/catalog"
+      - loop:
+          - get:
+              url: "/catalog/{{ $loopElement }}"
+        over: allProducts
+      - post:
+          url: "/cart"
+          beforeRequest: setRandomProductId
+          form:
+            productId: "dummy"
+      - get:
+          url: "/cart"

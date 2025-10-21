@@ -110,9 +110,13 @@ if [ "$quiet" = true ]; then
   quiet_args='-q'
 fi
 
-overrides_args="{\"config\": { \"phases\": [{ \"duration\": $duration, \"arrivalRate\": $vus }] } }"
+if [ "$duration" = "0" ]; then
+  overrides_args="{\"config\": { \"phases\": [{ \"arrivalRate\": $vus }] } }"
+else
+  overrides_args="{\"config\": { \"phases\": [{ \"duration\": $duration, \"arrivalRate\": $vus }] } }"
+fi
 
-docker build -t retail-store-sample-loadgen:run --pull --quiet -f Dockerfile.run .
+DOCKER_DEFAULT_PLATFORM=linux/amd64,linux/arm64 docker build -t retail-store-sample-loadgen:run --pull --quiet -f Dockerfile.run .
 
 container_name="retail-store-loadgen-$(date +%s)"
 
