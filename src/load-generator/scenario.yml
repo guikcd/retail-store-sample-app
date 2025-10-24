@@ -9,7 +9,7 @@ scenarios:
   - name: "Full catalog, checkout & payment"
     weight: 3
     beforeScenario: getAllProducts
-    #beforeRequest: "setDynamicRate"
+    beforeRequest: "setDynamicRate"
     flow:
       - get:
           url: "/home"
@@ -53,7 +53,7 @@ scenarios:
   - name: "Only catalog & cart"
     weight: 7
     beforeScenario: getAllProducts
-    #beforeRequest: "setDynamicRate"
+    beforeRequest: "setDynamicRate"
     flow:
       - get:
           url: "/home"
