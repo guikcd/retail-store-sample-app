@@ -29,14 +29,12 @@ module.exports = {
   setRandomProductId,
   getAllProducts,
   setDynamicRate: function(requestParams, context, ee, next) {
-    const hour = new Date().getHours();
+    const hour = new Date().toLocaleString("en-US", {timeZone: "Europe/Paris", hour12: false}).split(', ')[1].split(':')[0];
     const isWorkingHours = hour >= 9 && hour <= 17;
-    console.log(hour);
 
     if (!isWorkingHours) {
       // Skip 80% of requests during off-hours
       if (Math.random() < 0.8) {
-        console.log("Non working hours");
         return next(); // Skip this request
       }
     }
