@@ -7,8 +7,9 @@ config:
 
 scenarios:
   - name: "Full catalog, checkout & payment"
-    weight: 2
+    weight: 3
     beforeScenario: getAllProducts
+    #beforeRequest: "setDynamicRate"
     flow:
       - get:
           url: "/home"
@@ -50,8 +51,9 @@ scenarios:
             cvc: 123
 
   - name: "Only catalog & cart"
-    weight: 6
+    weight: 7
     beforeScenario: getAllProducts
+    #beforeRequest: "setDynamicRate"
     flow:
       - get:
           url: "/home"

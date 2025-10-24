@@ -8,6 +8,7 @@ let productIds = [
   "631a3db5-ac07-492c-a994-8cd56923c112",
   "8757729a-c518-4356-8694-9e795a9b3237",
   "d4edfedb-dbe9-4dd9-aae8-009489394955",
+  "d4edfedb-dbe9-4dd9-aae8-nonexistentt", // non existent product
 ];
 
 function getAllProducts(context, ee, next) {
@@ -27,4 +28,18 @@ function setRandomProductId(req, context, ee, next) {
 module.exports = {
   setRandomProductId,
   getAllProducts,
+  setDynamicRate: function(requestParams, context, ee, next) {
+    const hour = new Date().getHours();
+    const isWorkingHours = hour >= 9 && hour <= 17;
+    console.log(hour);
+
+    if (!isWorkingHours) {
+      // Skip 80% of requests during off-hours
+      if (Math.random() < 0.8) {
+        console.log("Non working hours");
+        return next(); // Skip this request
+      }
+    }
+    return next();
+  }
 };
