@@ -29,15 +29,28 @@ module.exports = {
   setRandomProductId,
   getAllProducts,
   setDynamicRate: function(requestParams, context, ee, next) {
-    const hour = new Date().toLocaleString("en-US", {timeZone: "Europe/Paris", hour12: false}).split(', ')[1].split(':')[0];
-    const isWorkingHours = hour >= 9 && hour <= 17;
-
-    if (!isWorkingHours) {
-      // Skip 80% of requests during off-hours
-      if (Math.random() < 0.8) {
-        return next(); // Skip this request
-      }
+    const now = new Date();
+    const hour = parseFloat(now.toLocaleString("en-US", {timeZone: "Europe/Paris", hour12: false}).split(', ')[1].split(':')[0]);
+    const minute = parseFloat(now.toLocaleString("en-US", {timeZone: "Europe/Paris", hour12: false}).split(', ')[1].split(':')[1]);
+    
+    // Convert to decimal hour (e.g., 9:30 = 9.5)
+    const decimalHour = hour + (minute / 60);
+    
+    // Create mountain curve: peak at 13:00 (1 PM), minimum at 3:00 AM
+    // Shift sine wave so peak is at 13:00 and minimum at 3:00
+    const peakHour = 13;
+    const minHour = 3;
+    
+    // Calculate traffic multiplier (0.1 to 1.0)
+    // Use cosine shifted to create peak at 13:00
+    const angle = ((decimalHour - peakHour) / 12) * Math.PI;
+    const trafficMultiplier = 0.1 + 0.9 * (Math.cos(angle) + 1) / 2;
+    
+    // Skip request based on traffic multiplier
+    if (Math.random() > trafficMultiplier) {
+      return next(); // Skip this request
     }
+    
     return next();
   }
 };
