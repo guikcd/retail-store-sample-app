@@ -77,7 +77,7 @@ export class RedisCheckoutRepository
   async set(key: string, value: string): Promise<string> {
     const client = await this.client();
 
-    return client.set(key, value);
+    return client.set(key, value, 'EX', 3600);
   }
 
   async remove(key: string): Promise<void> {
